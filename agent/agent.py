@@ -4,6 +4,8 @@ from utils.llm import LLM
 from prompts import SYSTEM_PROMPT
 from tools import TOOL_DEFINITIONS, TOOLS
 from utils.logger import logger
+from .state import AgentState
+from .planner import create_plan
 
 client = LLM()
 
@@ -71,6 +73,19 @@ def execute_tool(tool_name, arguments):
         }
 
 def run_agent(user_request):
+    state = AgentState(
+        task=user_request
+    )
+
+    print("\n========== CREATING PLAN ==========\n")
+
+    state.plan = create_plan(client, user_request)
+
+    for i, step in enumerate(state.plan, start=1):
+        print(f"{i}. {step}")
+
+    print("\n===================================\n")
+    
     messages = [
         {
             "role": "system",

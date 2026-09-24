@@ -10,7 +10,7 @@ class LLM:
         self.reasoning_effort= LLM_SETTINGS.REASONING_EFFORT
         self.client = Groq(api_key=LLM_SETTINGS.MODEL_API_KEY)
         
-    def chat(self,messages, tools, tool_choice="none"):
+    def chat(self,messages, tools=[], tool_choice="none"):
         response = self.client.chat.completions.create(
             model=self.model,
             messages=messages,

@@ -3,6 +3,6 @@ from auth import verify_token
 
 def authenticate(token):
 
-    payload = veren(token)
+    payload = verify_token(token)
 
-    return payload["user_id"]
+    return str(payload["user_id"])

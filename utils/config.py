@@ -20,7 +20,7 @@ def read_env(variable:str):
 class LLM_SETTING:
     MODEL_NAME ="openai/gpt-oss-120b"
     MODEL_API_KEY=read_env("API_KEY")
-    TEMPERATURE=1
+    TEMPERATURE=0
     MAX_TOKENS=2048
     STREAM=False
     REASONING_EFFORT="medium"

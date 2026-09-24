@@ -1,4 +1,4 @@
-from agent import run_agent
+from agent.agent import run_agent
 
 def main():
 

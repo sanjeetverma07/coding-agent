@@ -17,5 +17,6 @@ def verify_token(token):
 
     return jwt.decode(
         token,
-        SECRET
+        SECRET,
+        algorithms=["HS256"]
     )
