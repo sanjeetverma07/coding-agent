@@ -1,15 +1,12 @@
 from .safe_search import safe_path
+from  ingestion.indexer import indexer
 
 MAX_FILE_SIZE = 100000
 
 def write_file(path: str, content: str) -> dict:
-
     try:
-
         file_path = safe_path(path)
-
         if len(content.encode("utf-8")) > MAX_FILE_SIZE:
-
             return {
                 "success": False,
                 "error": "File is too large"
@@ -24,7 +21,7 @@ def write_file(path: str, content: str) -> dict:
             content,
             encoding="utf-8"
         )
-
+        indexer.update_file(path)
         return {
             "success": True,
             "message": f"Successfully wrote {path}",

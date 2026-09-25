@@ -14,6 +14,22 @@ ALLOWED_COMMANDS = {
     "python -m pytest",
 }
 
+IGNORE_DIRS = {
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "node_modules",
+}
+
+ACCEPTED_FILE_SUFFIX = {".py",
+                ".js",
+                ".ts",
+                ".tsx",
+                ".java",
+                ".go",
+                ".jsx"}
+
 def read_env(variable:str):
     return os.getenv(variable)
 

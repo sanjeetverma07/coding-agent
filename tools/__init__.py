@@ -4,7 +4,7 @@ from .search_code import search_code
 from .write_file import write_file
 from .run_command import run_command
 from .replace_in_file import replace_in_file
-from .search_repository import search_repository
+from .search_repository import search_repository, search_repository_hybrid
 
 TOOLS = {
     "list_files": list_files,
@@ -14,6 +14,7 @@ TOOLS = {
     "write_file":write_file,
     "replace_in_file": replace_in_file,
     "search_repository":search_repository,
+    "search_repository_hybrid": search_repository_hybrid,
 }
 
 
@@ -174,6 +175,37 @@ TOOL_DEFINITIONS = [
             "required": ["query"]
         }
     }
-}
+},
+    {
+    "type": "function",
+    "function": {
+        "name": "search_repository_hybrid",
+        "description": (
+            "Search the repository using both semantic search "
+            "and exact code/symbol matching. Use this when you "
+            "need to locate functionality, functions, classes, "
+            "symbols, or code related to a concept."
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": (
+                        "Natural language description, "
+                        "function name, class name, variable name, "
+                        "or exact code text to search for."
+                    )
+                },
+                "top_k": {
+                    "type": "integer",
+                    "description": "Maximum number of results.",
+                    "default": 5
+                }
+            },
+            "required": ["query"]
+        }
+    }
+},
 
 ]
