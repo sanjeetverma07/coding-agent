@@ -1,7 +1,7 @@
+import os
 # import sys
 from pathlib import Path
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 
@@ -14,10 +14,26 @@ ALLOWED_COMMANDS = {
     "python -m pytest",
 }
 
+IGNORE_DIRS = {
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "node_modules",
+}
+
+ACCEPTED_FILE_SUFFIX = {".py",
+                ".js",
+                ".ts",
+                ".tsx",
+                ".java",
+                ".go",
+                ".jsx"}
+
 def read_env(variable:str):
     return os.getenv(variable)
 
-class LLM_SETTING:
+class LlmSetting:
     MODEL_NAME ="openai/gpt-oss-120b"
     MODEL_API_KEY=read_env("API_KEY")
     TEMPERATURE=0
@@ -27,4 +43,4 @@ class LLM_SETTING:
     TOP_P=1
     STOP=None
     
-LLM_SETTINGS= LLM_SETTING()
+LLM_SETTINGS= LlmSetting()

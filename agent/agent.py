@@ -1,11 +1,11 @@
 import json
-
 from utils.llm import LLM
 from prompts import SYSTEM_PROMPT
 from tools import TOOL_DEFINITIONS, TOOLS
 from utils.logger import logger
-from .state import AgentState
-from .planner import create_plan
+from agent.state import AgentState
+from agent.planner import create_plan
+from ingestion.context_builder import build_context
 
 client = LLM()
 
@@ -14,59 +14,54 @@ MAX_SAME_ACTION = 2
 MAX_TEST_RETRIES = 3
 
 def ask_user_for_approval(tool_name, arguments):
-
     print("\n")
     print("=" * 60)
     print("APPROVAL REQUIRED")
     print("=" * 60)
-
     if tool_name == "replace_in_file":
-
         print(f"File: {arguments['path']}")
-
         print("\n------- OLD -------")
         print(arguments["old"])
-
         print("\n------- NEW -------")
         print(arguments["new"])
-
     elif tool_name == "write_file":
-
         print(f"File: {arguments['path']}")
-
         print("\n------- NEW FILE CONTENT -------")
         print(arguments["content"])
-
     elif tool_name == "run_command":
-
         print(
             f"Command: {arguments['command']}"
         )
-
+        
     answer = input(
         "\nAllow this action? (yes/no): "
     ).strip().lower()
-
     return answer in {"yes", "y"}
 
-
 def execute_tool(tool_name, arguments):
-
     if tool_name not in TOOLS:
-
         return {
             "success": False,
             "error": f"Unknown tool: {tool_name}"
         }
-
     try:
         logger.info(f"calling tool {tool_name}")
-        tool = TOOLS[tool_name]
-        result = tool(**arguments)
+        result = TOOLS[tool_name](**arguments)
+        if (
+            tool_name == "search_repository_hybrid"
+            and result.get("success")
+        ):
+            context = build_context(
+                result["results"]
+            )
+
+            result = {
+                "success": True,
+                "context": context
+            }
+
         return result
-
     except Exception as e:
-
         return {
             "success": False,
             "error": str(e)
@@ -76,16 +71,11 @@ def run_agent(user_request):
     state = AgentState(
         task=user_request
     )
-
     print("\n========== CREATING PLAN ==========\n")
-
     state.plan = create_plan(client, user_request)
-
     for i, step in enumerate(state.plan, start=1):
         print(f"{i}. {step}")
-
     print("\n===================================\n")
-    
     messages = [
         {
             "role": "system",

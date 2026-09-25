@@ -1,4 +1,5 @@
 from .safe_search import safe_path
+from  ingestion.indexer import indexer
 
 def replace_in_file(
     path: str,
@@ -21,16 +22,12 @@ def replace_in_file(
         )
 
         occurrences = content.count(old)
-
         if occurrences == 0:
-
             return {
                 "success": False,
                 "error": "Target text was not found"
             }
-
         if occurrences > 1:
-
             return {
                 "success": False,
                 "error": (
@@ -38,18 +35,16 @@ def replace_in_file(
                     "Refusing to make an ambiguous replacement."
                 )
             }
-
         updated_content = content.replace(
             old,
             new,
             1
         )
-
         file_path.write_text(
             updated_content,
             encoding="utf-8"
         )
-
+        indexer.update_file(path)
         return {
             "success": True,
             "path": path,
