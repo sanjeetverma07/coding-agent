@@ -1,24 +1,5 @@
 import json
-
-
-PLANNER_SYSTEM_PROMPT = """
-You are a software engineering planning assistant.
-
-Create a short plan for the coding task.
-
-Return ONLY valid JSON:
-
-{
-    "plan": [
-        "step 1",
-        "step 2",
-        "step 3"
-    ]
-}
-
-Do not write code.
-"""
-
+from prompts import PLANNER_SYSTEM_PROMPT
 
 def create_plan(llm, task):
 

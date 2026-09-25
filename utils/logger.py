@@ -1,4 +1,3 @@
-from .config import ROOT
 import logging
 
 logging.basicConfig(

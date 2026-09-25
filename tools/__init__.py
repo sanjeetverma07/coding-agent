@@ -4,6 +4,7 @@ from .search_code import search_code
 from .write_file import write_file
 from .run_command import run_command
 from .replace_in_file import replace_in_file
+from .search_repository import search_repository
 
 TOOLS = {
     "list_files": list_files,
@@ -12,6 +13,7 @@ TOOLS = {
     "run_command":run_command,
     "write_file":write_file,
     "replace_in_file": replace_in_file,
+    "search_repository":search_repository,
 }
 
 
@@ -143,6 +145,33 @@ TOOL_DEFINITIONS = [
                 "old",
                 "new"
             ]
+        }
+    }
+},
+    {
+    "type": "function",
+    "function": {
+        "name": "search_repository",
+        "description": (
+            "Perform semantic search over the repository "
+            "to find code relevant to a task. "
+            "Use this when you need to understand "
+            "which files or code sections are relevant."
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Natural language description of the code you are looking for."
+                },
+                "top_k": {
+                    "type": "integer",
+                    "description": "Number of relevant code chunks to return.",
+                    "default": 5
+                }
+            },
+            "required": ["query"]
         }
     }
 }
