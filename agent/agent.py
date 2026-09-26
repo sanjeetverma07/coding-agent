@@ -60,11 +60,18 @@ def convert_mcp_tools(mcp_tools):
         for tool in mcp_tools
     ]
 
-async def run_agent(user_request):
-    
-    await mcp_client.connect()
 
-    mcp_tools = await mcp_client.list_tools()
+# async def run_agent(request):
+#     async with MCPClient(
+#         "http://127.0.0.1:8000/mcp"
+#     ) as mcp_client:
+
+#         mcp_tools = await mcp_client.list_tools()
+
+async def run_agent(user_request):
+    mcp_tools=''
+    async with mcp_client as mcp:
+        mcp_tools = await mcp.list_tools()
     tools = convert_mcp_tools(mcp_tools)
     state = AgentState(
         task=user_request
@@ -212,7 +219,9 @@ async def run_agent(user_request):
             # -----------------------------------------
             # Execute real tool
             # -----------------------------------------
-            result = await mcp_client.call_tool(tool_name, arguments)
+            result=''
+            async with mcp_client as mcp:
+                result = await mcp_client.call_tool(tool_name, arguments)
 
             # result = execute_tool(
             #     tool_name,

@@ -7,7 +7,18 @@ from .tools import (
     safe_path as repo_safe_path,
     search_code as repo_search_code,
     search_repository as repo_search_repository,
-    write_file as repo_write_file
+    write_file as repo_write_file,
+    git_status as repo_git_status,
+    git_diff as repo_git_diff,
+    git_log as repo_git_log,
+    git_branch as repo_git_branch,
+    git_create_branch as repo_git_create_branch,
+    git_checkout as repo_git_checkout,
+    git_add as repo_git_add,
+    git_commit as repo_git_commit,
+    git_stash_pop as repo_git_stash_pop,
+    git_stash as repo_git_stash,
+    run_git as repo_run_git
 )
 
 class TOOLS:
@@ -43,3 +54,54 @@ class TOOLS:
     @mcp.tool()
     def write_file(path: str, content: str) -> dict:
         return repo_write_file(path, content)
+    
+    @mcp.tool()
+    def run_git(command:  list[str]) -> dict:
+        return repo_run_git(command)
+    
+    # @mcp.tool()
+    # def git_status() -> dict:
+    #     return repo_git_status()
+
+
+    # @mcp.tool()
+    # def git_diff() -> dict:
+    #     return repo_git_diff()
+
+
+    # @mcp.tool()
+    # def git_log(limit: int = 10) -> dict:
+    #     return repo_git_log(limit)
+
+
+    # @mcp.tool()
+    # def git_branch() -> dict:
+    #     return repo_git_branch()
+    
+    # @mcp.tool()
+    # def git_create_branch(branch_name: str) -> dict:
+    #     return repo_git_create_branch(branch_name)
+
+
+    # @mcp.tool()
+    # def git_checkout(branch_name: str) -> dict:
+    #     return repo_git_checkout(branch_name)
+
+
+    # @mcp.tool()
+    # def git_add(paths: list[str]) -> dict:
+    #     return repo_git_add(paths)
+
+
+    # @mcp.tool()
+    # def git_commit(message: str) -> dict:
+    #     return repo_git_commit(message)
+    
+    # @mcp.tool()
+    # def git_stash() -> dict:
+    #     return repo_git_stash()
+
+
+    # @mcp.tool()
+    # def git_stash_pop() -> dict:
+    #     return repo_git_stash_pop()
