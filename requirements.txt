@@ -2,3 +2,4 @@ groq
 dotenv
 faiss-cpu
 sentence-transformers
+mcp

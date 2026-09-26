@@ -1,6 +1,7 @@
+import asyncio
 from agent.agent import run_agent
 
-def main():
+async def main():
 
     print("=" * 60)
     print("LOCAL AI CODING AGENT")
@@ -10,7 +11,7 @@ def main():
         "\nWhat do you want the agent to do?\n> "
     )
 
-    result = run_agent(request)
+    result = await run_agent(request)
 
     print("\n")
     print("=" * 60)
@@ -21,4 +22,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
