@@ -7,6 +7,8 @@ from agent.state import AgentState
 from agent.planner import create_plan
 from ingestion.context_builder import build_context
 from utils.mcpClient import MCPClient
+from utils.config import APPROVAL_REQUIRED
+
 from .approval import ask_user_for_approval
 
 mcp_client = MCPClient("http://127.0.0.1:8000/mcp")
@@ -16,36 +18,6 @@ MAX_STEPS = 30
 MAX_SAME_ACTION = 2
 MAX_TEST_RETRIES = 3
 
-
-def execute_tool(tool_name, arguments):
-    if tool_name not in TOOLS:
-        return {
-            "success": False,
-            "error": f"Unknown tool: {tool_name}"
-        }
-    try:
-        logger.info(f"calling tool {tool_name}")
-        result = TOOLS[tool_name](**arguments)
-        if (
-            tool_name == "search_repository_hybrid"
-            and result.get("success")
-        ):
-            context = build_context(
-                result["results"]
-            )
-
-            result = {
-                "success": True,
-                "context": context
-            }
-
-        return result
-    except Exception as e:
-        return {
-            "success": False,
-            "error": str(e)
-        }
-        
 def convert_mcp_tools(mcp_tools):
 
     return [
@@ -189,11 +161,7 @@ async def run_agent(user_request):
             # Require approval for dangerous actions
             # -----------------------------------------
 
-            if tool_name in {
-                "write_file",
-                "replace_in_file",
-                "run_command"
-            }:
+            if tool_name in APPROVAL_REQUIRED:
                 approved = ask_user_for_approval(
                     tool_name,
                     arguments
