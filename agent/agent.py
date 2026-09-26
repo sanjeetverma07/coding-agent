@@ -1,73 +1,50 @@
 import json
 from utils.llm import LLM
 from prompts import SYSTEM_PROMPT
-from tools import TOOL_DEFINITIONS, TOOLS
+# from tools import TOOL_DEFINITIONS, TOOLS
 from utils.logger import logger
 from agent.state import AgentState
 from agent.planner import create_plan
 from ingestion.context_builder import build_context
+from utils.mcpClient import MCPClient
+from utils.config import APPROVAL_REQUIRED
 
+from .approval import ask_user_for_approval
+
+mcp_client = MCPClient("http://127.0.0.1:8000/mcp")
 client = LLM()
 
-MAX_STEPS = 15
+MAX_STEPS = 30
 MAX_SAME_ACTION = 2
 MAX_TEST_RETRIES = 3
 
-def ask_user_for_approval(tool_name, arguments):
-    print("\n")
-    print("=" * 60)
-    print("APPROVAL REQUIRED")
-    print("=" * 60)
-    if tool_name == "replace_in_file":
-        print(f"File: {arguments['path']}")
-        print("\n------- OLD -------")
-        print(arguments["old"])
-        print("\n------- NEW -------")
-        print(arguments["new"])
-    elif tool_name == "write_file":
-        print(f"File: {arguments['path']}")
-        print("\n------- NEW FILE CONTENT -------")
-        print(arguments["content"])
-    elif tool_name == "run_command":
-        print(
-            f"Command: {arguments['command']}"
-        )
-        
-    answer = input(
-        "\nAllow this action? (yes/no): "
-    ).strip().lower()
-    return answer in {"yes", "y"}
+def convert_mcp_tools(mcp_tools):
 
-def execute_tool(tool_name, arguments):
-    if tool_name not in TOOLS:
-        return {
-            "success": False,
-            "error": f"Unknown tool: {tool_name}"
-        }
-    try:
-        logger.info(f"calling tool {tool_name}")
-        result = TOOLS[tool_name](**arguments)
-        if (
-            tool_name == "search_repository_hybrid"
-            and result.get("success")
-        ):
-            context = build_context(
-                result["results"]
-            )
-
-            result = {
-                "success": True,
-                "context": context
+    return [
+        {
+            "type": "function",
+            "function": {
+                "name": tool.name,
+                "description": tool.description or "",
+                "parameters": tool.input_schema,
             }
-
-        return result
-    except Exception as e:
-        return {
-            "success": False,
-            "error": str(e)
         }
+        for tool in mcp_tools
+    ]
 
-def run_agent(user_request):
+
+# async def run_agent(request):
+#     async with MCPClient(
+#         "http://127.0.0.1:8000/mcp"
+#     ) as mcp_client:
+
+#         mcp_tools = await mcp_client.list_tools()
+
+async def run_agent(user_request):
+    mcp_tools=''
+    async with mcp_client as mcp:
+        mcp_tools = await mcp.list_tools()
+    tools = convert_mcp_tools(mcp_tools)
     state = AgentState(
         task=user_request
     )
@@ -94,7 +71,8 @@ def run_agent(user_request):
         print(f"========== STEP {step} ==========")
         message = client.chat(
                     messages=messages,
-                    tools=TOOL_DEFINITIONS,
+                    tools=tools,
+                    # tools=TOOL_DEFINITIONS,
                     tool_choice="auto"
                 )
         # -----------------------------------------
@@ -183,11 +161,7 @@ def run_agent(user_request):
             # Require approval for dangerous actions
             # -----------------------------------------
 
-            if tool_name in {
-                "write_file",
-                "replace_in_file",
-                "run_command"
-            }:
+            if tool_name in APPROVAL_REQUIRED:
                 approved = ask_user_for_approval(
                     tool_name,
                     arguments
@@ -210,19 +184,17 @@ def run_agent(user_request):
                 f"\nExecuting: {tool_name}"
             )
 
-            print(
-                f"Arguments: {arguments}"
-            )
-
-
             # -----------------------------------------
             # Execute real tool
             # -----------------------------------------
+            result=''
+            async with mcp_client as mcp:
+                result = await mcp_client.call_tool(tool_name, arguments)
 
-            result = execute_tool(
-                tool_name,
-                arguments
-            )
+            # result = execute_tool(
+            #     tool_name,
+            #     arguments
+            # )
 
 
             # -----------------------------------------

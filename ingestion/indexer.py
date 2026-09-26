@@ -1,6 +1,7 @@
 from sentence_transformers import SentenceTransformer
 import faiss
 from utils.config import REPO_ROOT, IGNORE_DIRS, ACCEPTED_FILE_SUFFIX
+CHUNK_SIZE=1000
 
 class CodeIndexer:
     def __init__(self):
@@ -32,7 +33,7 @@ class CodeIndexer:
             errors="ignore"
         )
         lines = content.splitlines()
-        chunk_size = 40
+        chunk_size = CHUNK_SIZE
         chunks = []
         for i in range(0, len(lines), chunk_size):
             chunk = "\n".join(
@@ -250,6 +251,24 @@ class CodeIndexer:
             reverse=True
         )
         return results[:top_k]
-        
+
+
+# import threading
+
+# indexer = CodeIndexer()
+
+# def build_index_background():
+#     try:
+#         indexer.build()
+#         print("Repository indexing completed.")
+#     except Exception as e:
+#         print(f"Repository indexing failed: {e}")
+
+
+# threading.Thread(
+#     target=build_index_background,
+#     daemon=True
+# ).start()
+
 indexer = CodeIndexer()
 indexer.build()

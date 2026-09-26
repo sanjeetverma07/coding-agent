@@ -20,6 +20,8 @@ IGNORE_DIRS = {
     ".venv",
     "venv",
     "node_modules",
+    ".virtualenv",
+    "virtualenv"
 }
 
 ACCEPTED_FILE_SUFFIX = {".py",
@@ -29,6 +31,13 @@ ACCEPTED_FILE_SUFFIX = {".py",
                 ".java",
                 ".go",
                 ".jsx"}
+
+APPROVAL_REQUIRED=[
+    "write_file",
+    "replace_in_file",
+    "run_command",
+    "run_git"
+]
 
 def read_env(variable:str):
     return os.getenv(variable)
