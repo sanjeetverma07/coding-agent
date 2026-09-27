@@ -8,16 +8,6 @@ from .tools import (
     search_code as repo_search_code,
     search_repository as repo_search_repository,
     write_file as repo_write_file,
-    git_status as repo_git_status,
-    git_diff as repo_git_diff,
-    git_log as repo_git_log,
-    git_branch as repo_git_branch,
-    git_create_branch as repo_git_create_branch,
-    git_checkout as repo_git_checkout,
-    git_add as repo_git_add,
-    git_commit as repo_git_commit,
-    git_stash_pop as repo_git_stash_pop,
-    git_stash as repo_git_stash,
     run_git as repo_run_git
 )
 
@@ -25,7 +15,18 @@ class TOOLS:
 
     @mcp.tool()
     def list_files(directory: str = ".") -> dict:
-        return repo_list_files(directory)
+        result = repo_list_files(directory)
+
+        # print("LIST FILES RESULT TYPE:", type(result))
+
+        # if isinstance(result, dict):
+        #     print("SUCCESS:", result.get("success"))
+
+        #     if "files" in result:
+        #         print("FILE COUNT:", len(result["files"]))
+
+        return result
+        # return repo_list_files(directory)
 
     @mcp.tool()
     def read_file(path: str) -> dict:

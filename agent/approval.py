@@ -20,8 +20,8 @@ def ask_user_for_approval(tool_name, arguments):
         print("Tool:", tool_name)
         print("Arguments:", arguments)
 
-    answer = input("\nApprove? (Y/n): ").strip().lower()
+    answer = input("\nApprove? (y/N): ").strip().lower()
     if answer == "":
-        return True
+        return False
 
     return answer == "y"

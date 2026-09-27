@@ -7,9 +7,16 @@ def search_repository(query: str, top_k: int = 5):
             top_k
         )
         return {
-            "success": True,
-            "results": results
+    "success": True,
+    "results": [
+        {
+            "file": result["file"],
+            "line": result["line"],
+            "snippet": result["snippet"][:1000]
         }
+        for result in results
+    ]
+}
 
     except Exception as e:
         return {
@@ -25,7 +32,14 @@ def search_repository_hybrid(query: str, top_k: int = 5):
         )
         return {
             "success": True,
-            "results": results
+                "results": [
+                    {
+                        "file": result["file"],
+                        "line": result["line"],
+                        "snippet": result["snippet"][:1000]
+                    }
+                    for result in results
+                ]
         }
 
     except Exception as e:

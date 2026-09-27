@@ -1,4 +1,4 @@
-from utils.config import REPO_ROOT
+from utils.config import REPO_ROOT, IGNORE_DIRS
 
 def search_code(query: str) -> dict:
 
@@ -12,13 +12,7 @@ def search_code(query: str) -> dict:
 
         results = []
 
-        ignored = {
-            ".git",
-            "__pycache__",
-            ".venv",
-            "venv",
-            "node_modules"
-        }
+        ignored = IGNORE_DIRS
 
         for path in REPO_ROOT.rglob("*"):
 

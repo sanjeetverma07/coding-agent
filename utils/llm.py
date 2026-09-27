@@ -10,6 +10,16 @@ class LLM:
         self.reasoning_effort= LLM_SETTINGS.REASONING_EFFORT
         self.client = Groq(api_key=LLM_SETTINGS.MODEL_API_KEY)
         
+    def chat_without_tool(self,messages):
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=messages,
+            temperature=self.temp,
+            reasoning_effort=self.reasoning_effort,
+            stream=self.stream,
+            response_format={"type": "json_object"}
+        )
+        return response.choices[0].message
     def chat(self,messages, tools=[], tool_choice="none"):
         response = self.client.chat.completions.create(
             model=self.model,

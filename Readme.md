@@ -37,6 +37,7 @@ Agent Controller
      ├── search_code
      ├── write_file
      ├── replace_in_file
+     |__ git
      └── run_command
              │
              ▼
@@ -102,6 +103,7 @@ The agent can execute repository commands such as:
 
 ```bash
 pytest
+git
 ```
 
 Command execution is controlled by the agent runtime and can require human approval.
@@ -210,40 +212,6 @@ The system is intentionally divided into several responsibilities.
 # 🔄 Agent Execution Loop
 
 The core agent loop is intentionally simple.
-
-```python
-while steps < MAX_STEPS:
-
-    response = llm(messages)
-
-    if response contains tool call:
-
-        tool_name = response.tool_name
-        arguments = response.arguments
-
-        validate_tool_call()
-
-        if approval_required(tool_name):
-            ask_for_approval()
-
-        result = execute_tool(
-            tool_name,
-            arguments
-        )
-
-        messages.append(response)
-
-        messages.append({
-            "role": "tool",
-            "tool_call_id": response.tool_call_id,
-            "content": result
-        })
-
-        continue
-
-    return response
-```
-
 The loop continues until the LLM determines that the task is complete or the runtime reaches its safety limits.
 
 ---
@@ -711,20 +679,28 @@ A simplified project structure is:
 ai-software-engineering-agent/
 │
 ├── main.py
+|── prompts.py
 │
 ├── agent/
-│   ├── runtime.py
+│   ├── agent.py
 │   ├── state.py
 │   └── planner.py
 │
-├── tools/
-│   ├── filesystem.py
-│   ├── search.py
-│   └── execution.py
+├── mcpServer/
+|   |── main.py
+|   |── server.py
+|   ├── tools/
+│       ├── github.py
+│       ├── list_files.py
+|       |── run_command
+│       └── write_file.py
 │
 ├── utils/
-│   └── llm.py
-│
+│   |── config.py
+|   |── logger.py
+|   |── mcpClient.py
+|   └── llm.py
+|   
 ├── test_repo/
 │   ├── auth.py
 │   ├── app.py
