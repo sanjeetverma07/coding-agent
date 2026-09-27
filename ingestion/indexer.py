@@ -7,7 +7,7 @@ class CodeIndexer:
     def __init__(self):
         self.model = SentenceTransformer(
             "all-MiniLM-L6-v2",
-            cache_folder='/transformer_model'
+            cache_folder='./transformer_model'
         )
         self.documents = []
         self.index = None
@@ -62,6 +62,50 @@ class CodeIndexer:
     #         print(
     #             f"Indexed {len(self.documents)} chunks"
     #         )
+    
+    
+    def build(self):
+        self.documents = []
+        files = self.get_files()
+        print(f"Repository: {REPO_ROOT}")
+        print(f"Files found: {len(files)}")
+
+        for file in files:
+            chunks = self.chunk_file(file)
+            self.documents.extend(chunks)
+
+        print(f"Chunks created: {len(self.documents)}")
+
+        if not self.documents:
+            self.index = None
+            print("No indexable files found. Skipping index build.")
+            return
+
+        texts = [
+            doc["content"]
+            for doc in self.documents
+        ]
+
+        embeddings = self.model.encode(
+            texts,
+            convert_to_numpy=True
+        )
+        dimension = embeddings.shape[1]
+        self.index = faiss.IndexFlatL2(
+            dimension
+        )
+        self.index.add(embeddings)
+        print(
+            f"Indexed {len(self.documents)} chunks"
+        )
+        self.index = faiss.IndexFlatL2(
+                dimension
+            )
+        self.index.add(embeddings)
+        print(
+                f"Indexed {len(self.documents)} chunks"
+            )
+    '''
     def build(self):
         self.documents = []
         for file in self.get_files():
@@ -76,13 +120,8 @@ class CodeIndexer:
             convert_to_numpy=True
         )
         dimension = embeddings.shape[1]
-        self.index = faiss.IndexFlatL2(
-            dimension
-        )
-        self.index.add(embeddings)
-        print(
-            f"Indexed {len(self.documents)} chunks"
-        )
+        '''
+        
 
     def search(self, query, top_k=5):
         query_embedding = self.model.encode(

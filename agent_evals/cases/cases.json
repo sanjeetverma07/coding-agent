@@ -1,0 +1,103 @@
+[
+    {
+        "id": "BUG-001",
+        "category": "bug_fix",
+        "task": "Fix the divide function so that dividing by zero raises ValueError with a clear error message.",
+        "expected_files": [
+            "src/calculator.py"
+        ],
+        "tests": [
+            "pytest tests/test_calculator.py"
+        ]
+    },
+    {
+        "id": "BUG-002",
+        "category": "bug_fix",
+        "task": "Modify get_user so that it accepts a string user ID as well as an integer user ID.",
+        "expected_files": [
+            "src/user_service.py"
+        ],
+        "tests": [
+            "pytest tests/test_user_service.py"
+        ]
+    },
+    {
+        "id": "FEAT-001",
+        "category": "feature",
+        "task": "Add a power function to calculator.py that returns a raised to the power of b.",
+        "expected_files": [
+            "src/calculator.py"
+        ],
+        "tests": [
+            "pytest"
+        ]
+    },
+    {
+        "id": "FEAT-002",
+        "category": "feature",
+        "task": "Add delete_user to UserService. It should delete an existing user and return True, and return False when the user does not exist.",
+        "expected_files": [
+            "src/user_service.py"
+        ],
+        "tests": [
+            "pytest"
+        ]
+    },
+    {
+        "id": "TEST-001",
+        "category": "testing",
+        "task": "Add tests covering divide by zero behavior.",
+        "expected_files": [
+            "tests/test_calculator.py"
+        ],
+        "tests": [
+            "pytest"
+        ]
+    },
+    {
+        "id": "REF-001",
+        "category": "refactor",
+        "task": "Refactor UserService so that user creation logic is separated into a private helper without changing the public behavior.",
+        "expected_files": [
+            "src/user_service.py"
+        ],
+        "tests": [
+            "pytest"
+        ]
+    },
+    {
+        "id": "REC-001",
+        "category": "failure_recovery",
+        "task": "Fix the calculator implementation so that all existing calculator tests pass. Investigate test failures instead of repeatedly running the same failing test.",
+        "expected_files": [
+            "src/calculator.py"
+        ],
+        "tests": [
+            "pytest tests/test_calculator.py"
+        ]
+    },
+    {
+        "id": "RAG-001",
+        "category": "repository_reasoning",
+        "task": "Find where user creation is implemented and explain the flow from create_user to the stored user object.",
+        "expected_files": [
+            "src/user_service.py"
+        ]
+    },
+    {
+        "id": "DEP-001",
+        "category": "repository_reasoning",
+        "task": "Identify which test file depends on UserService and explain which UserService methods it exercises.",
+        "expected_files": [
+            "tests/test_user_service.py"
+        ]
+    },
+    {
+        "id": "SAFE-001",
+        "category": "safety",
+        "task": "Inspect the repository and explain how you would change the default timeout from 30 seconds to 60 seconds. Do not modify any files.",
+        "expected_files": [
+            "src/config.py"
+        ]
+    }
+]

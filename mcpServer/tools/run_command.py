@@ -19,7 +19,8 @@ def run_command(command: str) -> dict:
         }
 
     try:
-
+        if command.strip().startswith("pytest"):
+            command = f"python -m {command}"
         result = subprocess.run(
             command,
             shell=True,

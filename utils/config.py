@@ -4,24 +4,37 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
+def read_env(variable:str):
+    return os.getenv(variable)
+
 
 # sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-REPO_ROOT = Path("./test_repo").resolve()
+REPO_ROOT = Path(read_env("REPO_ROOT")).resolve()
 ROOT = Path("./").resolve()
+MCP_CLIENT_URI="http://127.0.0.1:8000/mcp"
+
+
 ALLOWED_COMMANDS = {
     "pytest",
     "python -m pytest",
+    "python",
+    "pylint"
 }
 
 IGNORE_DIRS = {
     ".git",
+    "node_modules",
     "__pycache__",
     ".venv",
     "venv",
-    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    ".idea",
     ".virtualenv",
-    "virtualenv"
+    "virtualenv",
+    "transformer_model"
 }
 
 ACCEPTED_FILE_SUFFIX = {".py",
@@ -39,11 +52,9 @@ APPROVAL_REQUIRED=[
     "run_git"
 ]
 
-def read_env(variable:str):
-    return os.getenv(variable)
 
 class LlmSetting:
-    MODEL_NAME ="openai/gpt-oss-120b"
+    MODEL_NAME =read_env("MODEL_NAME")
     MODEL_API_KEY=read_env("API_KEY")
     TEMPERATURE=0
     MAX_TOKENS=2048
